@@ -165,6 +165,7 @@
             </p>
 
             <h3 id="design">Design and Testing</h3>
+            <br>
             <h4>Sensor Selection</h4>
             <p>In designing our theremin, we needed to choose a method for interpreting the distance between the user’s
               hands and the theremin. The possible methods we came up with were a true analog design and interpreting
@@ -179,7 +180,7 @@
               (Time of Flight) sensor that was accurate to within a mm within a reasonable distance range (in our case,
               1 - 2 meters).
             </p>
-
+            <br>
             <h4>Sensor Integration</h4>
             <p>Communications between the Raspberry Pi and a single distance sensor take place completely over the
               SDA/SCL pins on the PI and sensor. Power and ground routed from the Pi provide the requisite 3.3V to
@@ -204,6 +205,68 @@
               to retrieve current distances as reported by either sensors. Later on, we would continue to update our
               sensor class so that it would have a “tuning” mechanism and would return a frequency modulation factor
               instead of the new note frequency.
+
+            </p>
+            <br>
+            <h4>Generating Sound</h4>
+            <p>
+              This part of the theremin project took a significant amount of revision before we came to a final product. 
+              This was primarily because after working on one solution for some time, we reached a point from which we 
+              could not continue to trivially expand our design, leading us to invest additional time in looking for a 
+              new solution that would be more accommodating. Below, we will discuss the early solution we tried and why 
+              we felt that it was inadequate. 
+
+            </p>
+
+            <p>
+              Our first attempt to generate sound was to use the Python library PyAudio. This library allowed us to 
+              program sine waves based on frequency and volume, the two types of controls we needed to create a working 
+              theremin. However, one major issue we reached was that changes in frequency resulted in clipping. To combat 
+              this, we implemented a computationally expensive phase shifting that would run forever. However, we 
+              realized that this solution was simply too demanding to be run on the Pi if we were also going to support a 
+              responsive GUI.
+
+            </p>
+
+            <p>
+              The second solution we settled upon was to use the Python audio library Pyo. Compared to PyAudio, it had 
+              greater versatility in sound generation and allowed us the interesting feature of loading .wav files as audio 
+              samples to be played. Pyo also featured some extremely useful objects that would allow us to implement later 
+              stages of the project. Among them were the Server object, which functions as an intermediary between the other 
+              Pyo objects and device’s audio output, and a SndTable and Looper object that could load audio files and 
+              loop them respectively. 
+
+            </p>
+
+            <p>
+              Our earliest version of sound generation took advantage of .wav files we generated to represent various synth 
+              sounds. First we converted the .wav files into interpretable data using Pyo’s SndTable object. Pyo’s global 
+              Looper objects then allowed us to load these SndTable synth sounds and loop them over and over again. We then 
+              used the Looper object’s setPitch() and setMul() functions to adjust pitch and volume of the samples 
+              respectively. Tinkering with a crossfade parameter on the Looper object gave us cleanly repeating audio without 
+              any noticeable clipping where the sample would repeat. At this point, if we simply converted the output of the 
+              Sensor class’s pitch and volume sensors to control the Looper object’s parameters, we had a simple theremin.
+
+            </p>
+
+            <p>
+              Unfortunately, our Pi-theremin was still experiencing delays and clipping in its audio when we tried this simple 
+              test, most likely due to the limited hardware we were working with. Rather than scrap our work up to this point 
+              to build a version with even lower computational cost, we opted to convert the Pi into an audio controller that 
+              took advantage of an object in the Pyo library to communicate between the Pi and a separate device that would 
+              be generating our audio. For our testing purposes, the device the Pi was communicating with was our Macbook 
+              Pro laptops. 
+
+            </p>
+
+            <p>
+              To transfer information between our two devices, we made use of Pyo’s OscDataSend and OscDataReceive objects. They 
+              allow communication of relevant audio information using the Open Sound Control Protocol. These objects allowed us 
+              to separate our Looper object playing audio on our laptop from the sensor interface running on our Pi, lessening 
+              the computational burden on the Pi. As our project expanded and the Pi handled more state variables like the audio 
+              sample being played, whether the loop pedal was active, etc., we added to the data being transmitted between the 
+              two devices. However, an unintended consequence of this design choice was that our theremin device was now wireless 
+              as long as a separate device with speakers could communicate with the Pi over WiFi. 
 
             </p>
 
