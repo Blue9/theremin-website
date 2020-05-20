@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Theremin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A state-of-the-art digital theremin!">
+  <link href="css/style1.css" rel="stylesheet">
+  <link href="css/style1.responsive.css" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      padding-top: 20px;
+      padding-bottom: 60px;
+    }
+
+    .sidebar-nav {
+      border-radius: 6px;
+    }
+
+    .nav-header {
+      color: #fff;
+    }
+
+    .report {
+      max-width: 960px;
+    }
+
+    .report-body {
+      background: linear-gradient(rgb(71, 0, 88), rgb(0, 56, 94));
+      padding: 12px;
+      border-radius: 6px;
+    }
+    footer {
+      width: 100%;
+      padding-top: 60px;
+      display: inline-block;
+      text-align: center;
+      padding-bottom: 60px;
+    }
+  </style>
+
+<body>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span2">
+        <div class="well sidebar-nav">
+          <ul class="nav nav-list">
+            <li class="nav-header">Epic Navigation!</li>
+            <li><a href="#objective">Objective</a></li>
+            <li><a href="#introduction">Introduction</a></li>
+            <li><a href="#">Link</a></li>
+            <li><a href="#">Link</a></li>
+            <li><a href="#">Link</a></li>
+          </ul>
+        </div>
+        <!--/.well -->
+      </div>
+      <!--/span-->
+      <!-- <div class="span1">
+
+        </div> -->
+      <div class="span10 report centered">
+        <div class="hero-unit">
+          <h1><img src="img/etc/new2.gif" alt="new">Theremin 2.0!</h1>
+          <img src="img/flames.gif" alt="flames">
+          <h3><img src="img/etc/hot.gif" alt="hot">ECE 5725 Final Project</h3>
+          <p><a href="#objective" class="btn btn-primary btn-large"><img src="img/etc/mchammer.gif" alt="mchammer">Start reading! &raquo;</a></p>
+        </div>
+        <div class="row-fluid report-body">
+          <div class="span12">
+            <h3 id="objective">Objective</h3>
+            <p>Our goal in this project was firstly to design a fully functioning theremin instrument using the
+              constraints that were present in the hardware of a Raspberry Pi 3. This includes concurrently reading
+              distance values from two sensors over an I2C connection, interpreting user controls, and modulating sound
+              waves without noticeable delay. The final product had to combine all these tasks into an expressive and
+              responsive system that would be a joy to play.
+
+            </p>
+            <h3 id="introduction">Introduction</h3>
+            <p>For our final project, we decided to build a unique musical device that can be played without physical
+              contact: a theremin. Our final theremin design’s primary additional features of a tuning mechanism, a
+              choice of sounds from a sound bank and a loop pedal.
+            </p>
+
+            <h3>Design and Testing</h3>
+            <h4>Sensor Selection</h4>
+            <p>In designing our theremin, we needed to choose a method for interpreting the distance between the user’s
+              hands and the theremin. The possible methods we came up with were a true analog design and interpreting
+              disruptions in an emitted electric field, a computer vision design that used a camera to judge the
+              distance to the hands, and a distance sensor that would feed the Raspberry Pi with values representing
+              distance to the user’s hands. We chose the very latter of the methods because of the ease at which we
+              could assemble our instrument and begin working on the later parts of this project.
+            </p>
+
+            <p>The VL53L1X <a href="https://www.sparkfun.com/products/14722">distance sensor</a> we ended up choosing
+              was a VCSEL (Vertical Cavity Surface Emitting Laser) ToF
+              (Time of Flight) sensor that was accurate to within a mm within a reasonable distance range (in our case,
+              1 - 2 meters).
+            </p>
+
+            <h4>Sensor Integration</h4>
+            <p>Communications between the Raspberry Pi and a single distance sensor take place completely over the
+              SDA/SCL pins on the PI and sensor. Power and ground routed from the Pi provide the requisite 3.3V to
+              completely power the sensor. We were able to use a Python library to abstract away sensor setup and common
+              actions like checking the current distance measurement. The library we used was stable and made one sensor
+              integration quite simple. However, when we sought to connect a second sensor, so that pitch and volume
+              could be controlled independently, we ran into our first hurdle.
+            </p>
+
+            <p>
+              When two sensors were connected to the SDA/SCL pins on our Pi, only one I2C address would appear to be
+              occupied when running a native command like “i2cdetect”. After some research, we realized this was because
+              the I2C address was being assigned automatically each time the sensor was powered from flash memory. When
+              two sensors were powered and connected to the Pi’s I2C pins, they would occupy the same address and create
+              a conflict. To solve this issue, we powered off one of the sensors while changing the I2C address of the
+              remaining connected sensor.
+
+            </p>
+
+            <p>
+              We structured our codebase so that our sensor controls could be captured in an object with function calls
+              to retrieve current distances as reported by either sensors. Later on, we would continue to update our
+              sensor class so that it would have a “tuning” mechanism and would return a frequency modulation factor
+              instead of the new note frequency.
+
+            </p>
+          </div>
+        </div>
+        <!--/row-->
+      </div>
+      <!--/span-->
+    </div>
+    <!--/row-->
+
+    <hr>
+
+    <footer>
+      <img src="img/footer.gif" alt="guitar">
+      <p>&copy; Theremin 2.0 2020-forever</p>
+
+      <img src="img/visitor.gif" alt="visitor">
+      <img src="img/number.gif" alt="number">
+    </footer>
+
+  </div>
+  <!--/.fluid-container-->
+</body>
+
+</html>
