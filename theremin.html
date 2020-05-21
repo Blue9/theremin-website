@@ -51,6 +51,10 @@
       position: relative;
     }
 
+    .mh3 {
+      height: 4em;
+    }
+
     .marquee div {
       display: block;
       width: 200%;
@@ -127,14 +131,13 @@
           <br>
 
           <img src="img/flames.gif" alt="flames">
-          <h3>
-            <div class="marquee">
-              <div>
-                <span>ECE 5725 Final Project</span>
-                <span>ECE 5725 Final Project</span>
-              </div>
+          <div class="marquee mh3">
+            <div>
+              <h3><span>ECE 5725 Final Project</span></h3>
+              <h3><span>ECE 5725 Final Project</span></h3>
             </div>
-          </h3>
+          </div>
+
           <h4>Demo date: Monday 05/18/2020</h4>
 
 
@@ -618,10 +621,11 @@ hid_%(name)s = probesysfs,provider=hidinput,param=rotation=270,param=invert_y=1<
             <ul>
               <li>2x SparkFun Distance Sensor Breakout - 4 Meter, VL53L1X (Qwiic) - $21.95</li>
               <li>1x PiTFT - $34.95</li>
-              <br>
-              <p>Total Cost: $78.85</p>
 
             </ul>
+
+            <br>
+            <p>Total Cost: $78.85</p>
 
             <h3 id="references">References</h3>
             <ul>
