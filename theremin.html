@@ -346,7 +346,7 @@ tone_generator = tone_gen()
                 theremin is
                 in “fun mode” (explained in a later section).</li>
             </ul>
-
+            <img src="img/schema.gif" style="height: 400px" alt="schema">
             <h4>User Interface</h4>
             <p>We first tried to design our GUI in PyGame. Below is an early prototype of our GUI.
             </p>
@@ -510,18 +510,69 @@ hid_%(name)s = probesysfs,provider=hidinput,param=rotation=270,param=invert_y=1<
             </p>
 
             <h3 id="results">Results</h3>
+            <p>
+              Our initial scope for this project was to first build a simple theremin. Design extensions we agreed to 
+              work on included a tuning mechanism, a sound library, and a loop pedal. We were able to meet all these goals 
+              and continue expanding on the theremin, adding drums and a reverb effect in “fun” mode. Ideally, we would have 
+              kept the audio output on the Raspberry Pi, but given the hardware limitations, we were able to at least turn 
+              the Pi into a wireless controller for a potentially much better audio system; playing audio off a laptop’s 
+              sound card is a significant upgrade from the Pi’s sound card. To conclude, we ran into various hurdles along 
+              the way, but we were still able to complete our project.
 
-            <img src="img/schema.gif" style="height: 400px" alt="schema">
+            </p>
+            <img src="img/theremin.jpeg" style="height: 400px" alt="theremin" >
+            
 
             <h3 id="conclusion">Conclusion</h3>
+            <p>
+              Our final project imitates the function of a theremin and allows the user to play music without touching 
+              an instrument. The many design extensions, as described above, offer the thereminist additional configurations 
+              to work with, making the instrument more versatile than before. 
+            </p>
+            <p>
+              Our greatest hurdle was working around the Pi’s hardware limitations, especially a lackluster audio card that 
+              made audio generation bulky at best. 
+
+            </p>
 
             <h3 id="future">Future Work</h3>
+            <p>
+              The most logical design extensions include some more work with the loop pedal. It would be a significant 
+              upgrade if you could easily change the number of beats that are recorded by the loop pedal for playback. 
+              It would also be interesting to add a loop “Pause” button that differs from the “Reset” button and allows you 
+              to resume the loop again. Based on our codebase’s structure, both these extensions are feasible. 
+            </p>
 
+            <p>
+              A more open ended extension might be to continue expanding the sound library to include even more sounds.
+
+            </p>
+
+            <p>
+              A third extension would be to have a display showing the user what note they are playing on the theremin.
+
+            </p>
+              
             <h3 id="budget">Budget</h3>
+            <ul>
+              <li>2x  SparkFun Distance Sensor Breakout - 4 Meter, VL53L1X (Qwiic) - $21.95</li>
+              <li>1x Raspberry Pi 3 - Model B+ - $35.00</li>
+              <br>
+              <p>Total Cost: $78.90</p>
+                
+            </ul>
 
             <h3 id="references">References</h3>
+            <ul>
+              <li><a href="https://radiostud.io/howto-i2c-communication-rpi/">I2C Information</a></li>
+              <li><a href="https://www.sparkfun.com/products/14722">Sparkfun Sensor Documentation</a></li>
+              <li><a href="https://qwiic-vl53l1x-py.readthedocs.io/en/latest/">Sparkfun Sensor Library</a> </li>
+              <li><a href="http://ajaxsoundstudio.com/pyodoc/">Ajax Pyo Library</a></li>
+            </ul>
 
             <h3 id="code">Code</h3>
+            <p>Please find the code used in this project on <a class="btn btn-primary btn-large" href="https://github.com/Blue9/theremin/">Github</a></p>
+            
           </div>
         </div>
         <!--/row-->
