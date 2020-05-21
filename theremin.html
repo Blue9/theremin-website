@@ -276,7 +276,7 @@ tone_generator = tone_gen()
               was quite computationally expensive, and we did not see a clear way to add more complex sounds. Python is
               already quite slow, and coupled with the Pi’s limited power, this solution was simply too demanding.</p>
 
-            <p>We then tried using PyGame to generator audio. This seemed like a nice solution, since we did not have to
+            <p>We then tried using PyGame to generate audio. This seemed like a nice solution, since we did not have to
               include any additional libraries. However, we quickly ran into issues. PyGame’s mixer module depends on
               the PyGame event loop, so all audio events had to be handled in the same place as GUI events. This means
               that the GUI and audio logic would have to run on the same thread, making it impossible to handle GUI
@@ -291,7 +291,7 @@ tone_generator = tone_gen()
               add a guitar sound to the theremin, we would just need a sample of a guitar strum.
             </p>
 
-            <p>We first wanted to play synth pad sounds that would seamlessly loop. We first generated and exported
+            <p>We first wanted to play synth pad sounds that would seamlessly loop. To do this we generated and exported
               synth samples as .wav files using the Sytrus plugin in FL Studio 20. After loading the samples into Pyo
               using its SndTable object (a simple object that loads a file into memory), we created a Looper object to
               loop them over and over again. An issue with this is that the boundaries between consecutive plays of the
