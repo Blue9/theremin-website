@@ -83,6 +83,10 @@
     .btn-info:active {
       background: linear-gradient(#5eff00, #ff0);
     }
+
+    .imgc {
+      text-align: center;
+    }
   </style>
 
 <body>
@@ -119,11 +123,18 @@
         </div> -->
       <div class="span10 report centered">
         <div class="hero-unit">
-          <h1><img src="img/etc/new2.gif"  alt="new">Theremin 2.0!</h1>
+          <h1><img src="img/etc/new2.gif" alt="new">Theremin 2.0!</h1>
           <br>
-          <img src="img/theremin.jpeg" style="height: 400px" alt="theremin" >
+
           <img src="img/flames.gif" alt="flames">
-          <h3>ECE 5725 Final Project</h3>
+          <h3>
+            <div class="marquee">
+              <div>
+                <span>ECE 5725 Final Project</span>
+                <span>ECE 5725 Final Project</span>
+              </div>
+            </div>
+          </h3>
           <h4>Demo date: Monday 05/18/2020</h4>
 
 
@@ -151,15 +162,34 @@
           </p>
 
         </div>
-        <div class="row-fluid report-body">
+
+        <div class="row-fluid btn btn-primary">
+          <br>
+          <h2 style="color:black">
+            An image of our theremin!
+          </h2>
+          <img src="img/theremin.jpeg" style="height: 400px; margin-bottom: 20px;" alt="theremin">
+        </div>
+
+        <div class="row-fluid report-body" style="margin-top: 20px">
           <div class="span12">
             <h3 id="objective">Objective</h3>
             <p>Our goal in this project was to design a feature-packed digital theremin using a Raspberry Pi 3 Model B+.
               This entailed concurrently polling two distance sensors over an I2C connection, interpreting user
               controls, and generating and modulating sound waves without noticeable delay. The final product had to
               combine all these tasks into an expressive and responsive system that would be a joy to play.
-
             </p>
+
+            <p>For a sneak peek of the theremin in action, here's a remake of Blinding Lights we programmatically
+              played. Note: this was not played live, we manually sequenced all notes to be played in Python because we
+              couldn't play the theremin well enough.</p>
+
+            <div class="imgc">
+              <audio controls>
+                <source src="assets/demo.mp3">
+              </audio>
+            </div>
+
             <h3 id="introduction">Introduction</h3>
             <p>For our final project, we decided to build a unique musical device that can be played without physical
               contact: a theremin. A theremin consists of two main components: the pitch antenna and a volume antenna.
@@ -189,11 +219,16 @@
               minimum range, decent maximum range, high throughput, and high precision sensors. Some common distance
               sensor technologies include LED, LIDAR, ultrasonic, and VCSEL (Vertical Cavity Surface Emitting Laser).
               Among these, VCSEL is the closest to our desired parameters. <a
-                href=”https://www.sparkfun.com/distance_sensor_comparison_guide” target=”_blank”>More information is
+                href="https://www.sparkfun.com/distance_sensor_comparison_guide" target="_blank">More information is
                 available here.</a> We went with the <a href="https://www.sparkfun.com/products/14722"
                 target="_blank">Sparkfun VL53L1X</a> distance sensor, which is a VCSEL Time of Flight
               sensor that was accurate to within a mm within a reasonable distance range (in our case, 1 - 2 meters).
             </p>
+
+            <div class="imgc">
+              <img src="img/sensor_.jpg" alt="sensor" style="height: 400px">
+              <p>Above is an image of the sensor we used. Credit: Sparkfun</p>
+            </div>
 
             <h4>Sensor Integration</h4>
 
@@ -207,8 +242,14 @@
               remaining connected sensor. Once we were able to print the recorded distances of both sensors to our
               screen simultaneously, our initial sensor integration phase had concluded. Some high-level code for this
               reset functionality is below (more is available in our GitHub repository. See <a
-                href=”https://github.com/Blue9/theremin/blob/master/sensor.py” target=”_blank”>sensor.py</a>).
+                href="https://github.com/Blue9/theremin/blob/master/sensor.py" target="_blank">sensor.py</a>).
             </p>
+
+            <p>Below is an image of the assembled sensor circuit.</p>
+
+            <div class="imgc">
+              <img src="img/sensors.png" style="height: 400px" alt="sensors">
+            </div>
 
             <pre>
               <code class="python">self.disable_sensors()
@@ -224,8 +265,8 @@ self.vol_sensor.set_i2c_address(self.vol_address)</code>
               values given desired sensor ranges. One thing to note is that the calculated pitch is actually rounded to
               the nearest true note, rather than the directly calculated frequency. To prevent cluttering the global
               namespace with pin values and GPIO code, we put all of this functionality in a Sensor class. You can view
-              the Sensor class at our <a href=”https://github.com/Blue9/theremin/blob/master/sensor.py”
-                target=”_blank”>GitHub repository</a>.
+              the Sensor class at our <a href="https://github.com/Blue9/theremin/blob/master/sensor.py"
+                target="_blank">GitHub repository</a>.
             </p>
 
             <h4>Audio Synthesis</h4>
@@ -256,7 +297,7 @@ stream.write(volume*samples)</code></pre>
               crackling sounds due to the misalignment of the old and new waves. To combat this, we wrote a Python
               generator function that would correctly handle new frequencies. Below is some code showing how we did
               this. More is available at our GitHub repository, in <a
-                href=”https://github.com/Blue9/theremin/blob/master/theremin.py” target=”_blank”>theremin.py</a>.
+                href="https://github.com/Blue9/theremin/blob/master/theremin.py" target="_blank">theremin.py</a>.
             </p>
 
             <pre><code class="python">def tone_gen():
@@ -288,7 +329,7 @@ tone_generator = tone_gen()
             </p>
 
             <p>We finally settled upon Pyo, a Python DSP library implemented in C developed by <a
-                href=”http://ajaxsoundstudio.com/” target=”_blank”>Ajax Sound Studio</a>. Compared to the previous
+                href="http://ajaxsoundstudio.com/" target="_blank">Ajax Sound Studio</a>. Compared to the previous
               solutions, Pyo uses wavetable synthesis, which makes it easier to add more complex sounds. For example, to
               add a guitar sound to the theremin, we would just need a sample of a guitar strum.
             </p>
@@ -304,7 +345,7 @@ tone_generator = tone_gen()
               object’s setPitch() and setMul() functions. These functions change the synth’s pitch and volume in
               real-time. At this point, we could simply pipe the output of the Sensor class’s pitch and volume readings
               to the Looper object’s parameters, and we had a simple theremin. Code for all audio synthesis is available
-              in <a href=”https://github.com/Blue9/theremin/blob/master/synth.py” target=”_blank”>synth.py</a>.
+              in <a href="https://github.com/Blue9/theremin/blob/master/synth.py" target="_blank">synth.py</a>.
             </p>
 
             <p>Unfortunately, when running everything on the Pi, our theremin was still experiencing delays and audio
@@ -323,8 +364,15 @@ tone_generator = tone_gen()
 
             <h4>Controls</h4>
             <p>Once we had a method of generating sound and controlling it via our sensor class, we worked on
-              integrating these components into a controller class and GUI.
+              integrating these components into a controller class and GUI. Below is a diagram showing overall flow of
+              the system.
             </p>
+
+            <div class="imgc" style="margin: 20px 10px;">
+              <div class="btn">
+                <img src="img/schema.gif" style="height: 400px" alt="schema">
+              </div>
+            </div>
 
             <p>Our controller had to store all state information, which includes the current sound being played, the
               tempo (if applicable), the sensor ranges, and much more. The controller would not only have to interact
@@ -344,14 +392,16 @@ tone_generator = tone_gen()
                 them once (e.g. for drum sounds)</li>
               <li>reverb - This tells the server how much reverb to add to the sound. This is only used when the
                 theremin is
-                in “fun mode” (explained in a later section).</li>
+                in “fun mode" (explained in a later section).</li>
             </ul>
-            <img src="img/schema.gif" style="height: 400px" alt="schema">
+
             <h4>User Interface</h4>
             <p>We first tried to design our GUI in PyGame. Below is an early prototype of our GUI.
             </p>
 
-            <img src="img/gui.png" style="height: 400px" alt="gui">
+            <div class="imgc">
+              <img src="img/gui.png" style="height: 400px" alt="gui">
+            </div>
 
             <p>We were quite disappointed with the tedious setup of simple components such as buttons in Pygame, and we
               aimed to use a different GUI framework. Kivy is a Python GUI framework that offers much higher-level
@@ -414,10 +464,13 @@ hid_%(name)s = probesysfs,provider=hidinput,param=rotation=270,param=invert_y=1<
               video stepping through the states of the GUI.
             </p>
 
-            <video controls style="height: 400px">
-              <source src="img/theremin_gui.mp4" type="video/mp4">
-              Your browser does not support video playback.
-            </video>
+            <div class="imgc">
+              <div class="btn" style="margin: 20px auto;"><video controls style="height: 400px">
+                  <source src="img/theremin_gui.mp4" type="video/mp4">
+                  Your browser does not support video playback.
+                </video>
+              </div>
+            </div>
 
             <h4>Tuning</h4>
 
@@ -439,8 +492,8 @@ hid_%(name)s = probesysfs,provider=hidinput,param=rotation=270,param=invert_y=1<
               single sounds, we simply create a sound table for that sample and play it using Pyo’s SndTable object. To
               play looping sounds at a set tempo, we use EventInstrument objects and sequence a set of events to be
               called at set intervals (using the bpm parameter received from the controller). Code for all audio
-              synthesis is available in <a href=”https://github.com/Blue9/theremin/blob/master/synth.py”
-                target=”_blank”>synth.py</a>.
+              synthesis is available in <a href="https://github.com/Blue9/theremin/blob/master/synth.py"
+                target="_blank">synth.py</a>.
             </p>
 
             <p>The major design choice we had to make was how to organize all these audio files. Our solution was to
@@ -486,12 +539,12 @@ hid_%(name)s = probesysfs,provider=hidinput,param=rotation=270,param=invert_y=1<
 
             <h4>Additional features</h4>
 
-            <p>There were a few features that we placed under an “Options” menu for lack of better organization. They
-              include a brand new “Fun” button, a switch to toggle whether the drum sounds will loop when chosen by the
+            <p>There were a few features that we placed under an “Options" menu for lack of better organization. They
+              include a brand new “Fun" button, a switch to toggle whether the drum sounds will loop when chosen by the
               user, and a slider for setting the theremin bpm.
             </p>
 
-            <p>The “Fun” button, when active, makes a few important changes to the function of the theremin. Firstly,
+            <p>The “Fun" button, when active, makes a few important changes to the function of the theremin. Firstly,
               because we noticed that the volume sensor had little real use when playing our theremin, we changed the
               function of that sensor to control reverb. Reverb is calculated based on the distance the hand is from the
               sensor, just as with volume, however, instead of this value being used to set the intensity of the audio
@@ -511,36 +564,44 @@ hid_%(name)s = probesysfs,provider=hidinput,param=rotation=270,param=invert_y=1<
 
             <h3 id="results">Results</h3>
             <p>
-              Our initial scope for this project was to first build a simple theremin. Design extensions we agreed to 
-              work on included a tuning mechanism, a sound library, and a loop pedal. We were able to meet all these goals 
-              and continue expanding on the theremin, adding drums and a reverb effect in “fun” mode. Ideally, we would have 
-              kept the audio output on the Raspberry Pi, but given the hardware limitations, we were able to at least turn 
-              the Pi into a wireless controller for a potentially much better audio system; playing audio off a laptop’s 
-              sound card is a significant upgrade from the Pi’s sound card. To conclude, we ran into various hurdles along 
+              Our initial scope for this project was to first build a simple theremin. Design extensions we agreed to
+              work on included a tuning mechanism, a sound library, and a loop pedal. We were able to meet all these
+              goals
+              and continue expanding on the theremin, adding drums and a reverb effect in “fun" mode. Ideally, we would
+              have
+              kept the audio output on the Raspberry Pi, but given the hardware limitations, we were able to at least
+              turn
+              the Pi into a wireless controller for a potentially much better audio system; playing audio off a laptop’s
+              sound card is a significant upgrade from the Pi’s sound card. To conclude, we ran into various hurdles
+              along
               the way, but we were still able to complete our project.
 
             </p>
-            <img src="img/theremin.jpeg" style="height: 400px" alt="theremin" >
-            
+            <div class="imgc">
+              <img src="img/theremin.jpeg" style="height: 400px" alt="theremin">
+            </div>
+
 
             <h3 id="conclusion">Conclusion</h3>
             <p>
-              Our final project imitates the function of a theremin and allows the user to play music without touching 
-              an instrument. The many design extensions, as described above, offer the thereminist additional configurations 
-              to work with, making the instrument more versatile than before. 
+              Our final project imitates the function of a theremin and allows the user to play music without touching
+              an instrument. The many design extensions, as described above, offer the thereminist additional
+              configurations
+              to work with, making the instrument more versatile than before.
             </p>
             <p>
-              Our greatest hurdle was working around the Pi’s hardware limitations, especially a lackluster audio card that 
-              made audio generation bulky at best. 
-
+              Our greatest hurdle was working around the Pi’s hardware limitations, especially a lackluster audio card
+              that
+              made audio generation bulky at best.
             </p>
 
             <h3 id="future">Future Work</h3>
             <p>
-              The most logical design extensions include some more work with the loop pedal. It would be a significant 
-              upgrade if you could easily change the number of beats that are recorded by the loop pedal for playback. 
-              It would also be interesting to add a loop “Pause” button that differs from the “Reset” button and allows you 
-              to resume the loop again. Based on our codebase’s structure, both these extensions are feasible. 
+              The most logical design extensions include some more work with the loop pedal. It would be a significant
+              upgrade if you could easily change the number of beats that are recorded by the loop pedal for playback.
+              It would also be interesting to add a loop “Pause" button that differs from the “Reset" button and allows
+              you
+              to resume the loop again. Based on our codebase’s structure, both these extensions are feasible.
             </p>
 
             <p>
@@ -550,16 +611,16 @@ hid_%(name)s = probesysfs,provider=hidinput,param=rotation=270,param=invert_y=1<
 
             <p>
               A third extension would be to have a display showing the user what note they are playing on the theremin.
-
             </p>
-              
+
             <h3 id="budget">Budget</h3>
+            <p>In addition to the Raspberry Pi, these are the components we used. The PiTFT was provided for us.</p>
             <ul>
-              <li>2x  SparkFun Distance Sensor Breakout - 4 Meter, VL53L1X (Qwiic) - $21.95</li>
-              <li>1x Raspberry Pi 3 - Model B+ - $35.00</li>
+              <li>2x SparkFun Distance Sensor Breakout - 4 Meter, VL53L1X (Qwiic) - $21.95</li>
+              <li>1x PiTFT - $34.95</li>
               <br>
-              <p>Total Cost: $78.90</p>
-                
+              <p>Total Cost: $78.85</p>
+
             </ul>
 
             <h3 id="references">References</h3>
@@ -568,11 +629,17 @@ hid_%(name)s = probesysfs,provider=hidinput,param=rotation=270,param=invert_y=1<
               <li><a href="https://www.sparkfun.com/products/14722">Sparkfun Sensor Documentation</a></li>
               <li><a href="https://qwiic-vl53l1x-py.readthedocs.io/en/latest/">Sparkfun Sensor Library</a> </li>
               <li><a href="http://ajaxsoundstudio.com/pyodoc/">Ajax Pyo Library</a></li>
+              <li><a href="https://raspberrypi.stackexchange.com/questions/37484/kivy-and-3-5pitft">Getting Kivy to work
+                  with the PiTFT</a></li>
             </ul>
 
             <h3 id="code">Code</h3>
-            <p>Please find the code used in this project on <a class="btn btn-primary btn-large" href="https://github.com/Blue9/theremin/">Github</a></p>
-            
+            <p>Please find the code used in this project on <a class="btn btn-primary btn-large"
+                href="https://github.com/Blue9/theremin/">Github</a></p>
+
+            <h3>Work Distribution</h3>
+            <p>We could not physically work together, but we each had access to a Raspberry Pi and were able to
+              independently build the theremins. This made it a lot easier to work together on the software.</p>
           </div>
         </div>
         <!--/row-->
